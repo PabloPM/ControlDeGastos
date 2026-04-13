@@ -72,7 +72,7 @@ export default function CardsScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
-      <Text style={styles.header}>Mis Métodos de Pago</Text>
+      <Text style={[styles.header, { color: theme.text }]}>Mis Métodos de Pago</Text>
       <FlatList
         data={cards}
         keyExtractor={(item) => item.id}

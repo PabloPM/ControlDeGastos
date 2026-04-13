@@ -6,6 +6,9 @@ export const Colors = {
     subtext: '#6B7280',
     primary: '#3B82F6',
     border: '#E5E7EB',
+    linkText: '#2563EB',
+    buttonText: '#FFFFFF',
+    button: '#3B82F6',
   },
   dark: {
     background: '#0F172A', // Azul petróleo muy oscuro
@@ -14,5 +17,8 @@ export const Colors = {
     subtext: '#94A3B8',
     primary: '#60A5FA',
     border: '#334155',
+    linkText: '#93C5FD',
+    buttonText: '#FFF',
+    button: '#2563EB',
   }
 };

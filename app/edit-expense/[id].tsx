@@ -1,20 +1,48 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { CreditCard, Save, Tag, Trash2 } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, useColorScheme } from 'react-native';
+import { Colors } from '../../Colors';
 import { supabase } from '../../lib/supabase';
 
+type ExpenseRecord = {
+    id: string;
+    description: string;
+    amount: number;
+    category_id: string | null;
+    payment_method_id: string | null;
+};
+
+type Category = {
+    id: string;
+    name: string;
+};
+
+type PaymentMethod = {
+    id: string;
+    alias: string;
+};
+
+type FormState = {
+    description: string;
+    amount: string;
+    categoryId: string;
+    methodId: string;
+};
+
 export default function EditExpense() {
-    const { id } = useLocalSearchParams();
+    const { id } = useLocalSearchParams<{ id: string }>();
     const router = useRouter();
-    const [loading, setLoading] = useState(true);
-    const [saving, setSaving] = useState(false);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [saving, setSaving] = useState<boolean>(false);
+    const colorScheme = useColorScheme();
+    const theme = Colors[colorScheme ?? 'light'];
 
     // Catálogos
-    const [categories, setCategories] = useState([]);
-    const [methods, setMethods] = useState([]);
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [methods, setMethods] = useState<PaymentMethod[]>([]);
 
-    const [form, setForm] = useState({
+    const [form, setForm] = useState<FormState>({
         description: '',
         amount: '',
         categoryId: '',
@@ -42,7 +70,9 @@ export default function EditExpense() {
                     methodId: gastoRes.data.payment_method_id
                 });
             }
+            // @ts-ignore
             setCategories(catsRes.data || []);
+            // @ts-ignore
             setMethods(methsRes.data || []);
         } catch (e) {
             Alert.alert('Error', 'No se pudieron cargar los datos');
@@ -85,24 +115,24 @@ export default function EditExpense() {
     if (loading) return <ActivityIndicator style={{ flex: 1 }} size="large" color="#3B82F6" />;
 
     return (
-        <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 40 }}>
-            <Text style={styles.label}>Descripción</Text>
+        <ScrollView style={[styles.container, { backgroundColor: theme.background }]} contentContainerStyle={{ paddingBottom: 40 }}>
+            <Text style={[styles.label, { color: theme.text }]}>Descripción</Text>
             <TextInput
-                style={styles.input}
+                style={[styles.input, { backgroundColor: theme.card, color: theme.text }]}
                 value={form.description}
                 onChangeText={(t) => setForm({ ...form, description: t })}
             />
 
-            <Text style={styles.label}>Monto</Text>
+            <Text style={[styles.label, { color: theme.text }]}>Monto</Text>
             <TextInput
-                style={styles.input}
+                style={[styles.input, { backgroundColor: theme.card, color: theme.text }]}
                 value={form.amount}
                 keyboardType="numeric"
                 onChangeText={(t) => setForm({ ...form, amount: t })}
             />
 
             {/* Selector de Categoría */}
-            <Text style={styles.label}><Tag size={14} /> Categoría</Text>
+            <Text style={[styles.label, { color: theme.text }]}><Tag size={14} /> Categoría</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipRow}>
                 {categories.map(c => (
                     <TouchableOpacity

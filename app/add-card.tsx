@@ -56,10 +56,10 @@ export default function AddCard() {
 	return (
 		<ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
 			<Text style={[styles.label, { color: theme.text }]}>Nombre de la Tarjeta</Text>
-			<TextInput style={[styles.input, { backgroundColor: theme.card, color: theme.text, borderColor: theme.border }]} placeholder="Ej. Visa Oro" onChangeText={(t) => setForm({ ...form, alias: t })} />
+			<TextInput style={[styles.input, { backgroundColor: theme.card, color: theme.text, borderColor: theme.border }]} placeholderTextColor={theme.subtext} placeholder="Ej. Visa Oro" onChangeText={(t) => setForm({ ...form, alias: t })} />
 
 			<Text style={[styles.label, { color: theme.text }]}>Últimos 4 dígitos</Text>
-			<TextInput style={[styles.input, { backgroundColor: theme.card, color: theme.text, borderColor: theme.border }]} placeholder="1234" keyboardType="numeric" maxLength={4} onChangeText={(t) => setForm({ ...form, lastFour: t })} />
+			<TextInput style={[styles.input, { backgroundColor: theme.card, color: theme.text, borderColor: theme.border }]} placeholderTextColor={theme.subtext} placeholder="1234" keyboardType="numeric" maxLength={4} onChangeText={(t) => setForm({ ...form, lastFour: t })} />
 
 			<Text style={[styles.label, { color: theme.text }]}>Categoría</Text>
 			<View style={[styles.row, { backgroundColor: theme.card }]}>

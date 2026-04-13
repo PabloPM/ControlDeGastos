@@ -1,21 +1,52 @@
-import { useFocusEffect, useRouter } from 'expo-router';
+import { DynamicIcon } from '@/components/Icon';
+import { Link, useFocusEffect, useRouter } from 'expo-router';
 import * as Icons from 'lucide-react-native';
+import { PlusCircle } from 'lucide-react-native';
 import React, { useCallback, useState } from 'react';
-import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
 import { PieChart } from "react-native-gifted-charts";
 import { Colors } from '../../Colors';
 import { supabase } from '../../lib/supabase';
+
+// Definir tipos
+interface Category {
+  name: string;
+  icon_name: string;
+  color_hex: string;
+}
+
+interface PaymentMethod {
+  id: string;
+  alias: string;
+}
+
+interface Expense {
+  id: string;
+  description: string;
+  amount: number;
+  created_at: string;
+  is_installment: boolean;
+  payment_method_id: string;
+  categories: Category | null;
+  payment_methods: PaymentMethod | null;
+}
+
+interface Totales {
+  totalMes: number;
+  soloMSI: number;
+  soloDirecto: number;
+}
 
 export default function DashboardScreen() {
   const colorScheme = useColorScheme();
   const theme = Colors[colorScheme ?? 'light'];
   const router = useRouter();
 
-  const [gastos, setGastos] = useState([]);
-  const [metodos, setMetodos] = useState([]);
-  const [filtroMetodo, setFiltroMetodo] = useState('todos');
-  const [totales, setTotales] = useState({ totalMes: 0, soloMSI: 0, soloDirecto: 0 });
-  const [loading, setLoading] = useState(true);
+  const [gastos, setGastos] = useState<Expense[]>([]);
+  const [metodos, setMetodos] = useState<PaymentMethod[]>([]);
+  const [filtroMetodo, setFiltroMetodo] = useState<string>('todos');
+  const [totales, setTotales] = useState<Totales>({ totalMes: 0, soloMSI: 0, soloDirecto: 0 });
+  const [loading, setLoading] = useState<boolean>(true);
 
   useFocusEffect(
     useCallback(() => {
@@ -28,6 +59,7 @@ export default function DashboardScreen() {
     const primerDiaMes = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
 
     // 1. Cargar Catálogo de Métodos de Pago
+    // @ts-ignore
     const { data: meths } = await supabase.from('payment_methods').select('id, alias').eq('user_id', user.id);
     setMetodos(meths || []);
 
@@ -49,12 +81,13 @@ export default function DashboardScreen() {
       .from('installment_plans')
       .select('installment_amount, expenses!inner(payer_id)')
       .eq('is_active', true)
-      .eq('expenses.payer_id', user.id);
+      .eq('expenses.payer_id', user?.id);
 
     const msi = cuotasMSI?.reduce((acc, curr) => acc + curr.installment_amount, 0) || 0;
     const directo = expData?.filter(g => !g.is_installment && g.created_at >= primerDiaMes)
       .reduce((acc, curr) => acc + curr.amount, 0) || 0;
 
+    // @ts-ignore
     setGastos(expData || []);
     setTotales({ totalMes: msi + directo, soloMSI: msi, soloDirecto: directo });
     setLoading(false);
@@ -63,9 +96,9 @@ export default function DashboardScreen() {
   const dataGrafica = Object.values(gastos.reduce((acc, g) => {
     const cat = g.categories?.name || 'Otros';
     if (!acc[cat]) acc[cat] = { value: 0, color: g.categories?.color_hex, text: cat };
-    acc[cat].value += parseFloat(g.amount);
+    acc[cat].value += g.amount;
     return acc;
-  }, {}));
+  }, {} as Record<string, { value: number; color?: string; text: string }>));
 
   if (loading) return <ActivityIndicator style={{ flex: 1, backgroundColor: theme.background }} size="large" color={theme.primary} />;
 
@@ -77,7 +110,14 @@ export default function DashboardScreen() {
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={() => (
           <>
-            <Text style={[styles.header, { color: theme.text }]}>Mi Resumen</Text>
+            <View style={styles.headerRow}>
+              <Text style={[styles.header, { color: theme.text }]}>Mi Resumen</Text>
+              <Link href="/add-expense" asChild>
+                <Pressable style={{ marginRight: 15 }}>
+                  <PlusCircle size={28} color="#3B82F6" />
+                </Pressable>
+              </Link>
+            </View>
 
             <View style={[styles.totalCard, { backgroundColor: colorScheme === 'dark' ? '#1E293B' : '#111827' }]}>
               <Text style={styles.totalLabel}>Total este mes</Text>
@@ -121,6 +161,7 @@ export default function DashboardScreen() {
           </>
         )}
         renderItem={({ item }) => {
+          // @ts-ignore
           const Icono = Icons[item.categories?.icon_name] || Icons.HelpCircle;
           return (
             <TouchableOpacity
@@ -128,7 +169,10 @@ export default function DashboardScreen() {
               onPress={() => router.push(`/edit-expense/${item.id}`)}
             >
               <View style={[styles.iconCircle, { backgroundColor: item.categories?.color_hex + '25' }]}>
-                <Icono size={20} color={item.categories?.color_hex} />
+                <DynamicIcon
+                  name={item.categories?.icon_name || 'help-circle'}
+                  color={item.categories?.color_hex || theme.text}
+                  size={22} />
               </View>
               <View style={{ flex: 1, marginLeft: 12 }}>
                 <Text style={[styles.gastoDesc, { color: theme.text }]}>{item.description}</Text>
@@ -145,7 +189,7 @@ export default function DashboardScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, paddingHorizontal: 20 },
-  header: { fontSize: 26, fontWeight: 'bold', marginTop: 50, marginBottom: 15 },
+  header: { fontSize: 26, fontWeight: 'bold', },
   totalCard: { padding: 25, borderRadius: 24, marginBottom: 20 },
   totalLabel: { color: '#94A3B8', fontSize: 11, textTransform: 'uppercase' },
   totalAmount: { color: 'white', fontSize: 32, fontWeight: 'bold' },
@@ -160,5 +204,6 @@ const styles = StyleSheet.create({
   iconCircle: { width: 40, height: 40, borderRadius: 10, justifyContent: 'center', alignItems: 'center' },
   gastoDesc: { fontWeight: '600', fontSize: 15 },
   gastoMeta: { fontSize: 12 },
-  gastoMonto: { fontWeight: 'bold', fontSize: 15 }
+  gastoMonto: { fontWeight: 'bold', fontSize: 15 },
+  headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 50, marginBottom: 15 }
 });

@@ -48,6 +48,7 @@ export default function AddExternalContact() {
 			<TextInput
 				style={[styles.input, { backgroundColor: theme.card, color: theme.text }]}
 				placeholder="Ej. Juan Pérez"
+				placeholderTextColor={theme.subtext}
 				value={name}
 				onChangeText={setName}
 			/>
@@ -56,13 +57,14 @@ export default function AddExternalContact() {
 			<TextInput
 				style={[styles.input, { backgroundColor: theme.card, color: theme.text }]}
 				placeholder="Ej. Hermano, Amigo de la oficina"
+				placeholderTextColor={theme.subtext}
 				value={alias}
 				onChangeText={setAlias}
 			/>
 
 			<TouchableOpacity style={[styles.saveBtn, { backgroundColor: theme.primary }]} onPress={onSave} disabled={loading}>
 				<Check color="white" size={20} />
-				<Text style={[styles.saveBtnText, { color: theme.text }]}>{loading ? 'Guardando...' : 'Crear Contacto'}</Text>
+				<Text style={[styles.saveBtnText, { color: theme.buttonText }]}>{loading ? 'Guardando...' : 'Crear Contacto'}</Text>
 			</TouchableOpacity>
 		</View>
 	);

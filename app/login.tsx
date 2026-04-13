@@ -1,9 +1,14 @@
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { ActivityIndicator, Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, StyleSheet, Text, TextInput, TouchableOpacity, useColorScheme, View } from 'react-native';
+import { Colors } from '../Colors';
 import { supabase } from '../lib/supabase';
 
 export default function LoginScreen() {
+
+  const colorScheme = useColorScheme();
+  const theme = Colors[colorScheme ?? 'light'];
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -25,33 +30,35 @@ export default function LoginScreen() {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{isRegistering ? 'Crea tu cuenta' : 'Bienvenido'}</Text>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <Text style={[styles.title, { color: theme.text }]}>{isRegistering ? 'Crea tu cuenta' : 'Bienvenido'}</Text>
 
       <TextInput
-        style={styles.input}
+        style={[styles.input, { backgroundColor: theme.card, color: theme.text }]}
         placeholder="Email"
+        placeholderTextColor={theme.subtext}
         value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
       />
 
       <TextInput
-        style={styles.input}
+        style={[styles.input, { backgroundColor: theme.card, color: theme.text }]}
         placeholder="Contraseña"
+        placeholderTextColor={theme.subtext}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleAuth} disabled={loading}>
+      <TouchableOpacity style={[styles.button, { backgroundColor: theme.button }]} onPress={handleAuth} disabled={loading}>
         {loading ? <ActivityIndicator color="white" /> :
-          <Text style={styles.buttonText}>{isRegistering ? 'Registrarse' : 'Entrar'}</Text>
+          <Text style={[styles.buttonText, { color: theme.buttonText }]}>{isRegistering ? 'Registrarse' : 'Entrar'}</Text>
         }
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => setIsRegistering(!isRegistering)} style={{ marginTop: 20 }}>
-        <Text style={styles.linkText}>
+        <Text style={[styles.linkText, { color: theme.linkText }]}>
           {isRegistering ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate'}
         </Text>
       </TouchableOpacity>

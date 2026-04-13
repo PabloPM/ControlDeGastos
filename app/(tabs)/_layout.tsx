@@ -8,6 +8,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
+          headerShown: false,
           title: 'Gastos',
           tabBarIcon: ({ color }) => <Wallet size={24} color={color} />,
           // Botón para abrir el formulario de nuevo gasto
@@ -37,7 +38,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="cards"
         options={{
-          title: 'Mis Tarjetas',
+          title: 'Métodos de Pago',
           tabBarIcon: ({ color }) => <CreditCard size={24} color={color} />,
           headerRight: () => (
             <Link href="/add-card" asChild>

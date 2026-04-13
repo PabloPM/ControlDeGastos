@@ -42,7 +42,7 @@ export default function AddGroup() {
 
 			Alert.alert('¡Éxito!', 'Grupo creado correctamente');
 			router.back();
-		} catch (e) {
+		} catch (e: any) {
 			Alert.alert('Error', e.message);
 		} finally {
 			setLoading(false);
@@ -63,6 +63,7 @@ export default function AddGroup() {
 			<TextInput
 				style={[styles.input, { backgroundColor: theme.card, color: theme.text }]}
 				placeholder="Ej. Viaje a la Playa, Casa 2024..."
+				placeholderTextColor={theme.subtext}
 				value={form.name}
 				onChangeText={(t) => setForm({ ...form, name: t })}
 			/>
@@ -71,6 +72,7 @@ export default function AddGroup() {
 			<TextInput
 				style={[styles.input, { backgroundColor: theme.card, color: theme.text }]}
 				placeholder="Ej. Gastos compartidos del departamento"
+				placeholderTextColor={theme.subtext}
 				multiline
 				numberOfLines={3}
 				value={form.description}
