@@ -1,10 +1,23 @@
 import { Link, Tabs } from 'expo-router';
 import { BarChart2, CreditCard, PlusCircle, Settings, Users, Wallet } from 'lucide-react-native';
-import { Pressable } from 'react-native';
+import { Pressable, useColorScheme } from 'react-native';
+import { Colors } from '../../Colors';
 
 export default function TabLayout() {
+  const colorScheme = useColorScheme();
+  const themeColors = Colors[colorScheme ?? 'dark'];
+
   return (
-    <Tabs screenOptions={{ tabBarActiveTintColor: '#3B82F6' }}>
+    <Tabs
+      screenOptions={{
+        headerStyle: { backgroundColor: themeColors.card },
+        headerTintColor: themeColors.text,
+        headerTitleStyle: { color: themeColors.text },
+        tabBarActiveTintColor: themeColors.linkText,
+        tabBarInactiveTintColor: themeColors.text,
+        tabBarStyle: { backgroundColor: themeColors.background },
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
@@ -15,7 +28,7 @@ export default function TabLayout() {
           headerRight: () => (
             <Link href="/add-expense" asChild>
               <Pressable style={{ marginRight: 15 }}>
-                <PlusCircle size={28} color="#3B82F6" />
+                <PlusCircle size={28} color={themeColors.primary} />
               </Pressable>
             </Link>
           ),
@@ -25,11 +38,12 @@ export default function TabLayout() {
         name="groups"
         options={{
           title: 'Grupos',
+
           tabBarIcon: ({ color }) => <Users size={24} color={color} />,
           headerRight: () => (
             <Link href="/add-external" asChild>
               <Pressable style={{ marginRight: 15 }}>
-                <PlusCircle size={28} color="#3B82F6" />
+                <PlusCircle size={28} color={themeColors.primary} />
               </Pressable>
             </Link>
           ),
@@ -43,7 +57,7 @@ export default function TabLayout() {
           headerRight: () => (
             <Link href="/add-card" asChild>
               <Pressable style={{ marginRight: 15 }}>
-                <PlusCircle size={28} color="#3B82F6" />
+                <PlusCircle size={28} color={themeColors.primary} />
               </Pressable>
             </Link>
           ),
@@ -53,6 +67,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="stats"
         options={{
+          headerShown: false,
           title: 'Estadísticas',
           tabBarIcon: ({ color }) => <BarChart2 size={24} color={color} />,
         }}
@@ -61,6 +76,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="settings"
         options={{
+          headerShown: false,
           title: 'Ajustes',
           tabBarIcon: ({ color }) => <Settings size={24} color={color} />,
         }}

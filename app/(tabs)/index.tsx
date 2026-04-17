@@ -4,7 +4,6 @@ import * as Icons from 'lucide-react-native';
 import { PlusCircle } from 'lucide-react-native';
 import React, { useCallback, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
-import { PieChart } from "react-native-gifted-charts";
 import { Colors } from '../../Colors';
 import { supabase } from '../../lib/supabase';
 
@@ -93,12 +92,6 @@ export default function DashboardScreen() {
     setLoading(false);
   };
 
-  const dataGrafica = Object.values(gastos.reduce((acc, g) => {
-    const cat = g.categories?.name || 'Otros';
-    if (!acc[cat]) acc[cat] = { value: 0, color: g.categories?.color_hex, text: cat };
-    acc[cat].value += g.amount;
-    return acc;
-  }, {} as Record<string, { value: number; color?: string; text: string }>));
 
   if (loading) return <ActivityIndicator style={{ flex: 1, backgroundColor: theme.background }} size="large" color={theme.primary} />;
 
@@ -111,7 +104,7 @@ export default function DashboardScreen() {
         ListHeaderComponent={() => (
           <>
             <View style={styles.headerRow}>
-              <Text style={[styles.header, { color: theme.text }]}>Mi Resumen</Text>
+              <Text style={[styles.header, { color: theme.text }]}>Mis gastos</Text>
               <Link href="/add-expense" asChild>
                 <Pressable style={{ marginRight: 15 }}>
                   <PlusCircle size={28} color="#3B82F6" />
@@ -121,10 +114,10 @@ export default function DashboardScreen() {
 
             <View style={[styles.totalCard, { backgroundColor: colorScheme === 'dark' ? '#1E293B' : '#111827' }]}>
               <Text style={styles.totalLabel}>Total este mes</Text>
-              <Text style={styles.totalAmount}>${totales.totalMes.toLocaleString()}</Text>
+              <Text style={styles.totalAmount}>${totales.totalMes.toFixed(2).toLocaleString()}</Text>
               <View style={styles.row}>
-                <Text style={styles.subText}>Gastos: ${totales.soloDirecto}</Text>
-                <Text style={styles.subText}>MSI: ${totales.soloMSI}</Text>
+                <Text style={styles.subText}>Gastos: ${totales.soloDirecto.toFixed(2).toLocaleString()}</Text>
+                <Text style={styles.subText}>MSI: ${totales.soloMSI.toFixed(2).toLocaleString()}</Text>
               </View>
             </View>
 
@@ -148,16 +141,6 @@ export default function DashboardScreen() {
               ))}
             </ScrollView>
 
-            <View style={[styles.chartCard, { backgroundColor: theme.card }]}>
-              <Text style={[styles.chartTitle, { color: theme.text }]}>Distribución</Text>
-              <View style={{ alignItems: 'center' }}>
-                <PieChart
-                  data={dataGrafica} donut radius={60} innerRadius={45}
-                  innerCircleColor={theme.card}
-                  centerLabelComponent={() => <Text style={{ color: theme.text, fontSize: 10 }}>Gastos</Text>}
-                />
-              </View>
-            </View>
           </>
         )}
         renderItem={({ item }) => {
@@ -175,10 +158,10 @@ export default function DashboardScreen() {
                   size={22} />
               </View>
               <View style={{ flex: 1, marginLeft: 12 }}>
-                <Text style={[styles.gastoDesc, { color: theme.text }]}>{item.description}</Text>
-                <Text style={[styles.gastoMeta, { color: theme.subtext }]}>{item.payment_methods?.alias}</Text>
+                <Text numberOfLines={1} style={[styles.gastoDesc, { color: theme.text }]}>{item.description}</Text>
+                <Text numberOfLines={1} style={[styles.gastoMeta, { color: theme.subtext }]}>{item.payment_methods?.alias}</Text>
               </View>
-              <Text style={[styles.gastoMonto, { color: theme.text }]}>${item.amount}</Text>
+              <Text style={[styles.gastoMonto, { color: theme.text }]}>${item.amount.toFixed(2).toLocaleString()}</Text>
             </TouchableOpacity>
           );
         }}

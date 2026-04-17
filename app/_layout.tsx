@@ -4,9 +4,11 @@ import { supabase } from '../lib/supabase';
 
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useColorScheme } from 'react-native';
+import { Colors } from '../Colors';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const themeColors = Colors[colorScheme ?? 'light'];
   const segments = useSegments();
   const router = useRouter();
   const hasCheckedSession = useRef(false);
@@ -47,7 +49,14 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack screenOptions={{ headerShown: false }}>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          headerStyle: { backgroundColor: themeColors.card },
+          headerTintColor: themeColors.text,
+          headerTitleStyle: { color: themeColors.text },
+        }}
+      >
         <Stack.Screen name="login" />
         <Stack.Screen name="(tabs)" />
         {/* Modales con presentación de tarjeta */}
