@@ -149,7 +149,7 @@ export default function DashboardScreen() {
           return (
             <TouchableOpacity
               style={[styles.gastoItem, { backgroundColor: theme.card }]}
-              onPress={() => router.push(`/edit-expense/${item.id}`)}
+              onPress={() => router.push(`/detail-expense/${item.id}`)}
             >
               <View style={[styles.iconCircle, { backgroundColor: item.categories?.color_hex + '25' }]}>
                 <DynamicIcon

@@ -1,8 +1,6 @@
 import { useFocusEffect, useRouter } from 'expo-router';
-import * as Icons from 'lucide-react-native';
-import { ArrowRightLeft, UserCircle, UserPlus, Users } from 'lucide-react-native';
 import React, { useCallback, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
+import { StyleSheet, Text, useColorScheme, View } from 'react-native';
 import { Colors } from '../../Colors';
 import { supabase } from '../../lib/supabase';
 
@@ -95,73 +93,11 @@ export default function GroupsScreen() {
     setLoading(false);
   };
 
+  return <View style={[styles.container, { backgroundColor: theme.background, alignItems: 'center', justifyContent: 'center' }]}>
+    <Text style={[styles.sectionTitle, { color: theme.text }]}>Ahorita no joven</Text>
+  </View>
 
-  return (
-    <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
-      <View style={styles.headerRow}>
-        <Text style={[styles.header, { color: theme.text }]}>Grupos y Contactos</Text>
-        <TouchableOpacity style={[styles.addBtn, { backgroundColor: theme.primary + '20' }]} onPress={() => router.push('/add-group')}>
-          <UserPlus size={20} color={theme.primary} />
-        </TouchableOpacity>
-      </View>
 
-      {/* SECCIÓN: GRUPOS COMPARTIDOS */}
-      <Text style={[styles.sectionTitle, { color: theme.text }]}>Grupos Compartidos</Text>
-      {groups.map((item) => (
-        <TouchableOpacity key={item.id} style={[styles.itemCard, { backgroundColor: theme.card, borderColor: theme.border }]}>
-          <View style={[styles.iconBox, { backgroundColor: theme.primary + '15' }]}>
-            <Users size={22} color={theme.primary} />
-          </View>
-          <View style={{ flex: 1 }}>
-            <Text style={[styles.itemName, { color: theme.text }]}>{item.name}</Text>
-            <Text style={[styles.itemSub, { color: theme.subtext }]}>{item.description || 'Sin descripción'}</Text>
-          </View>
-          <ArrowRightLeft size={18} color={theme.subtext} />
-        </TouchableOpacity>
-      ))}
-
-      {/* SECCIÓN: CONTACTOS EXTERNOS (Tu hermano, etc.) */}
-      <Text style={[styles.sectionTitle, { marginTop: 30 }]}>Personas Externas (Deudas)</Text>
-      {externals.map((item) => (
-        <TouchableOpacity key={item.id} style={[styles.itemCard, { backgroundColor: theme.card, borderColor: theme.border }]}>
-          <View style={[styles.iconBox, { backgroundColor: theme.primary + '15' }]}>
-            <UserCircle size={22} color={theme.primary} />
-          </View>
-          <View style={{ flex: 1 }}>
-            <Text style={[styles.itemName, { color: theme.text }]}>{item.name}</Text>
-            <Text style={[styles.itemSub, { color: theme.subtext }]}>Deuda personal • {item.alias || 'Familiar'}</Text>
-          </View>
-          <ArrowRightLeft size={18} color={theme.subtext} />
-        </TouchableOpacity>
-      ))}
-
-      <View style={styles.historialSection}>
-        <Text style={[styles.sectionTitle, { color: theme.text }]}>Historial de Pagos Recibidos</Text>
-        {historialPagos.length === 0 ? (
-          <Text style={[styles.emptyText, { color: theme.subtext }]}>Aún no hay pagos registrados.</Text>
-        ) : (
-          historialPagos.map((pago) => (
-            <View key={pago.id} style={styles.historialCard}>
-              <View style={styles.checkIcon}>
-                <Icons.Check size={16} color="#059669" />
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={[styles.pagoNombre, { color: theme.text }]}>{pago.external_contacts.name}</Text>
-                <Text style={[styles.pagoConcepto, { color: theme.subtext }]}>{pago.expenses.description}</Text>
-              </View>
-              <View style={{ alignItems: 'flex-end' }}>
-                <Text style={[styles.pagoMonto, { color: theme.text }]}>+${pago.share_amount}</Text>
-                <Text style={[styles.pagoFecha, { color: theme.subtext }]}>
-                  {new Date(pago.expenses.created_at).toLocaleDateString()}
-                </Text>
-              </View>
-            </View>
-          ))
-        )}
-      </View>
-
-    </ScrollView>
-  );
 }
 
 const styles = StyleSheet.create({

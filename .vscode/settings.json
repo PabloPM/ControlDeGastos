@@ -4,5 +4,7 @@
     "source.organizeImports": "explicit",
     "source.sortMembers": "explicit"
   },
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "editor.stickyTabStops": true,
+  "editor.tabSize": 2
 }

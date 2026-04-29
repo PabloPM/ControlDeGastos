@@ -13,7 +13,8 @@
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "La app necesita acceder a la galería para seleccionar un comprobante.",
         "NSCameraUsageDescription": "La app necesita acceder a la cámara para tomar una foto del comprobante."
-      }
+      },
+      "bundleIdentifier": "com.pablopm2.ControlDeGastos"
     },
     "android": {
       "adaptiveIcon": {
@@ -26,8 +27,9 @@
       "predictiveBackGestureEnabled": false,
       "package": "com.pablopm2.ControlDeGastos",
       "permissions": [
-        "CAMERA",
-        "READ_EXTERNAL_STORAGE"
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.RECORD_AUDIO"
       ]
     },
     "web": {

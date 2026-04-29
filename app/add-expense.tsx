@@ -82,6 +82,7 @@ export default function AddExpense() {
         const formData = new FormData();
         formData.append('file', { uri: image, name: fileName, type: `image/${fileExt}` } as any);
         const { data: storageData, error: sError } = await supabase.storage.from('tickets').upload(fileName, formData);
+        console.log('Storage upload response:', { storageData, sError });
         if (sError) throw sError;
         ticketUrl = storageData.path;
       }
